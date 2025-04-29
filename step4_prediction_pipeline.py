@@ -14,7 +14,7 @@ def create_patches_single(image, num_patches):
     patches = patches.contiguous().view(C, num_patches * num_patches, patch_size, patch_size)
     patches = patches.unsqueeze(0)
     return patches
-
+  
 def run_prediction(image_path, num_patches=4):
     transform = transforms.ToTensor()
     image = Image.open(image_path).convert('L')
@@ -26,18 +26,23 @@ def run_prediction(image_path, num_patches=4):
     projector = PatchProjection()
     patches_embedded = projector(patches)
 
-    model = TransformerEncoder(embed_dim=64, num_heads=8, num_classes=10)
-    model.load_state_dict(torch.load('trained_encoder.pt'))
-    model.eval()
+    encoder = torch.load('trained_encoder.pt')
+    encoder.eval()
+
+    mlp_classifier = torch.load('trained_mlp.pt')
+    mlp_classifier.eval()
 
     with torch.no_grad():
-        pred = model(patches_embedded)
-        label = pred.argmax(1).item()
-    return label
+        features = encoder(patches_embedded)
+        logits = mlp_classifier(features)
+        probs = torch.softmax(logits, dim=1)
+        label = probs.argmax(1).item()
+        confidence = probs.max(1).values.item()
+    return label, confidence
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--image_path', type=str, required=True)
     args = parser.parse_args()
-    label = run_prediction(args.image_path)
-    print(f'Predicted Label: {label}')
+    label, confidence = run_prediction(args.image_path)
+    print(f'Predicted Label: {label} with Confidence: {confidence:.4f}')
