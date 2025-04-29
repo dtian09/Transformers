@@ -1,1 +1,1 @@
-Train a transformer encoder to classify MNIST digit images.
+Train a transformer encoder to classify MNIST digit images. step3_training_pipeline.py calls step0, step1 and step3 to train a transformer encoder on the MNIST training set and evaluate its accuracy on the test set.
