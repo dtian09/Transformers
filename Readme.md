@@ -1,0 +1,1 @@
+Train a transformer encoder to classify MNIST digit images.
