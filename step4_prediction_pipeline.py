@@ -26,10 +26,10 @@ def run_prediction(image_path, num_patches=4):
     projector = PatchProjection()
     patches_embedded = projector(patches)
 
-    encoder = torch.load('trained_encoder.pt')
+    encoder = torch.load('trained_encoder.pt', weights_only=False)
     encoder.eval()
 
-    mlp_classifier = torch.load('trained_mlp.pt')
+    mlp_classifier = torch.load('trained_mlp.pt', weights_only=False)
     mlp_classifier.eval()
 
     with torch.no_grad():
