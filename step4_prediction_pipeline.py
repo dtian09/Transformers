@@ -5,7 +5,7 @@ from torchvision import transforms
 from PIL import Image
 
 from step1_patch_projection import PatchProjection
-from step2_train_test_encoder import TransformerEncoder
+from step2_train_test_integration_of_encoder_and_mlp import TransformerEncoder
 
 def create_patches_single(image, num_patches):
     C, H, W = image.shape
